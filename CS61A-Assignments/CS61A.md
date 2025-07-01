@@ -2,7 +2,7 @@
 
 > 学习一下py，再打一打编程的基础，因为课程lab的质量很高。
 >
-> 坚持下去，哪怕它没有学分。
+> **坚持下去，哪怕它没有学分。**
 >
 > 这也是计算机的一大圣经了，但是我还没有好好理解过。
 >
@@ -271,6 +271,8 @@ list 列表
 
 **序列计算：**
 
+> 我觉得py比较奇妙的地方。
+
 ```py
 >>> [2, 7] + digits * 2
 [2, 7, 1, 8, 2, 8, 1, 8, 2, 8]
@@ -361,6 +363,10 @@ slicing 切片：选取特定的范围，也可以选取step
 [8, 2, 8]
 ```
 
+> 这里看完可以先做lab03理解一下。
+>
+> 整个lab03是比较简单的，都是最简单的递归函数。
+
 #### Tree
 
 > ​	使用列表包含其他列表，闭包（Closure Property）属性。
@@ -372,6 +378,64 @@ slicing 切片：选取特定的范围，也可以选取step
 #### LinkedList
 
 > 我们再次来理解一下什么是链表。
+
+```python
+four = [1, [2, [3, [4, 'empty']]]]
+```
+
+我们把这样的一个嵌套的序列理解成一个链表。
+
+其实和tree的构成是类似的。
+
+那么这个链表的方法就应该这样定义：
+
+```py
+>>> empty = 'empty'
+>>> def is_link(s):
+        """判断 s 是否为链表"""
+        return s == empty or (len(s) == 2 and is_link(s[1]))
+
+>>> def link(first, rest):
+        """用 first 和 rest 构建一个链表"""
+        assert is_link(rest), " rest 必须是一个链表"
+        return [first, rest]
+
+>>> def first(s):
+        """返回链表 s 的第一个元素"""
+        assert is_link(s), " first 只能用于链表"
+        assert s != empty, "空链表没有第一个元素"
+        return s[0]
+
+>>> def rest(s):
+        """返回 s 的剩余元素"""
+        assert is_link(s), " rest 只能用于链表"
+        assert s != empty, "空链表没有剩余元素"
+        return s[1]
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -375,6 +375,43 @@ slicing 切片：选取特定的范围，也可以选取step
 
 就是tree，没什么说的，这个很好理解。
 
+遍历处理Tree上的所有数字，注意使用`isinstsnce`来判断是否是某个类型对应的实例。
+
+```py
+def deep_map(f, s):
+    """Replace all non-list elements x with f(x) in the nested list s.
+
+    >>> six = [1, 2, [3, [4], 5], 6]
+    >>> deep_map(lambda x: x * x, six)
+    >>> six
+    [1, 4, [9, [16], 25], 36]
+    >>> # Check that you're not making new lists
+    >>> s = [3, [1, [4, [1]]]]
+    >>> s1 = s[1]
+    >>> s2 = s1[1]
+    >>> s3 = s2[1]
+    >>> deep_map(lambda x: x + 1, s)
+    >>> s
+    [4, [2, [5, [2]]]]
+    >>> s1 is s[1]
+    True
+    >>> s2 is s1[1]
+    True
+    >>> s3 is s2[1]
+    True
+    """
+    "*** YOUR CODE HERE ***"
+    for index in range(len(s)):
+        if not isinstance(s[index], list):
+            s[index] = f(s[index])
+        else:
+            deep_map(f, s[index])
+```
+
+> 这里要读一读官网的手册，要不然会看不懂在干什么。
+>
+> 比较像简单的leetcode问题。
+
 #### LinkedList
 
 > 我们再次来理解一下什么是链表。
@@ -412,6 +449,292 @@ four = [1, [2, [3, [4, 'empty']]]]
         assert s != empty, "空链表没有剩余元素"
         return s[1]
 ```
+
+### 可变数据
+
+1.对象OOP的基本概念。
+
+2.可变对象---》列表
+
+比较典型的概念，检查是alias还是copy。
+
+```python
+>>> suits is nest[0]
+True
+>>> suits is ['heart', 'diamond', 'spade', 'club']
+False
+>>> suits == ['heart', 'diamond', 'spade', 'club']
+True
+```
+
+tuple元组：
+
+**不可变**对象。
+
+```python
+>>> 1, 2 + 3
+(1, 5)
+>>> ("the", 1, ("and", "only"))
+('the', 1, ('and', 'only'))
+>>> type( (10, 20) )
+<class 'tuple'>
+```
+
+类似的语法：
+
+```python
+>>> code = ("up", "up", "down", "down") + ("left", "right") * 2
+>>> len(code)
+8
+>>> code[3]
+'down'
+>>> code.count("down")
+2
+>>> code.index("left")
+4
+```
+
+但是不能和list一样对于序列进行自由的操作。
+
+#### 字典（Dictionary）
+
+其实就是**HashTable**？
+
+```py
+>>> numerals = {'I': 1.0, 'V': 5, 'X': 10}
+>>> numerals['X']
+10
+```
+
+字典本身是乱序的。
+
+> ​	Python 3.7 及以上版本的字典顺序会确保为插入顺序，此行为是自 3.6 版开始的 CPython 实现细节，字典会保留插入时的顺序，对键的更新也不会影响顺序，删除后再次添加的键将被插入到末尾
+
+字典类型也有一些限制：
+
+- 字典的 key **不可以是可变数据，也不能包含可变数据**。
+
+- 一个 key 只能对应一个 value。
+
+  get方法：
+
+```py
+>>> numerals.get('A', 0)
+0
+>>> numerals.get('V', 0)
+5
+```
+
+推导式创建dic的语法：
+
+```py
+>>> {x: x*x for x in range(3,6)}
+{3: 9, 4: 16, 5: 25}
+```
+
+> 先来做lab04,我们再继续来研究理论内容。
+
+例子：嵌套构建一个dic。
+
+```py
+def divide(quotients, divisors):
+    """Return a dictonary in which each quotient q is a key for the list of
+    divisors that it divides evenly.
+
+    >>> divide([3, 4, 5], [8, 9, 10, 11, 12])
+    {3: [9, 12], 4: [8, 12], 5: [10]}
+    >>> divide(range(1, 5), range(20, 25))
+    {1: [20, 21, 22, 23, 24], 2: [20, 22, 24], 3: [21, 24], 4: [20, 24]}
+    """
+    return {x: [y for y in divisors if y % x == 0] for x in quotients}
+```
+
+下一个纯自己实现确实有点复杂。
+
+> 使用nonlocal引用闭包之外的变量。
+
+```py
+def buy(fruits_to_buy, prices, total_amount):
+    """Print ways to buy some of each fruit so that the sum of prices is amount.
+
+    >>> prices = {'oranges': 4, 'apples': 3, 'bananas': 2, 'kiwis': 9}
+    >>> buy(['apples', 'oranges', 'bananas'], prices, 12)  # We can only buy apple, orange, and banana, but not kiwi
+    [2 apples][1 orange][1 banana]
+    >>> buy(['apples', 'oranges', 'bananas'], prices, 16)
+    [2 apples][1 orange][3 bananas]
+    [2 apples][2 oranges][1 banana]
+    >>> buy(['apples', 'kiwis'], prices, 36)
+    [3 apples][3 kiwis]
+    [6 apples][2 kiwis]
+    [9 apples][1 kiwi]
+    """
+    
+    ans_count = 0
+
+    def add(fruits, amount, cart):
+        nonlocal ans_count
+
+        if not fruits:
+            if amount == 0:
+                for fruit, count in cart.items():
+                    if count == 0:
+                        return
+                
+                ans_count += 1
+                if ans_count > 1:
+                    print()
+                for fruit, count in cart.items():
+                    if count == 1:
+                        s = fruit[:-1]
+                    else:
+                        s = fruit[:]
+                    print("[" + str(count) + " " + s + "]", end = "")    
+            return 
+
+        fruit = fruits[0]
+        price = prices[fruit]
+        count = amount // price
+
+        for index in range(count + 1):
+            cart[fruit] = index
+            add(fruits[1:], amount - price * index, cart)
+            cart[fruit] = 0
+    
+    cart = {fruit : 0 for fruit in fruits_to_buy}
+    add(fruits_to_buy, total_amount, cart)
+```
+
+相对来说比较简单，能理解字典的工作原理即可。
+
+> 接着来hw04，稍微有点难度，考察对于Tree的理解。
+>
+> 
+
+一个交错洗牌的函数，zip就是把两个list对应位置的元素合成一个tuple元组。
+
+
+
+```py
+def shuffle(s):
+    """Return a shuffled list that interleaves the two halves of s.
+
+    >>> shuffle(range(6))
+    [0, 3, 1, 4, 2, 5]
+    >>> letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+    >>> shuffle(letters)
+    ['a', 'e', 'b', 'f', 'c', 'g', 'd', 'h']
+    >>> shuffle(shuffle(letters))
+    ['a', 'c', 'e', 'g', 'b', 'd', 'f', 'h']
+    >>> letters  # Original list should not be modified
+    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+    """
+    assert len(s) % 2 == 0, 'len(seq) must be even'
+    "*** YOUR CODE HERE ***"
+    # 交错洗牌
+    mid = len(s) // 2
+    list1 = s[:mid]
+    list2 = s[mid:]
+    res = []
+    for num1, num2 in zip(list1, list2):
+        res.extend((num1, num2))
+    return res
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

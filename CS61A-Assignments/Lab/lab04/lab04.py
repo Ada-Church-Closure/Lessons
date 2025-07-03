@@ -7,7 +7,7 @@ def divide(quotients, divisors):
     >>> divide(range(1, 5), range(20, 25))
     {1: [20, 21, 22, 23, 24], 2: [20, 22, 24], 3: [21, 24], 4: [20, 24]}
     """
-    return {____: ____ for ____ in ____}
+    return {x: [y for y in divisors if y % x == 0] for x in quotients}
 
 
 def buy(fruits_to_buy, prices, total_amount):
@@ -24,16 +24,40 @@ def buy(fruits_to_buy, prices, total_amount):
     [6 apples][2 kiwis]
     [9 apples][1 kiwi]
     """
+    
+    ans_count = 0
+
     def add(fruits, amount, cart):
-        if fruits == [] and amount == 0:
-            print(cart)
-        elif fruits and amount > 0:
-            fruit = fruits[0]
-            price = ____
-            for k in ____:
-                # Hint: The display function will help you add fruit to the cart.
-                add(____, ____, ____)
-    add(fruits_to_buy, total_amount, '')
+        nonlocal ans_count
+
+        if not fruits:
+            if amount == 0:
+                for fruit, count in cart.items():
+                    if count == 0:
+                        return
+                
+                ans_count += 1
+                if ans_count > 1:
+                    print()
+                for fruit, count in cart.items():
+                    if count == 1:
+                        s = fruit[:-1]
+                    else:
+                        s = fruit[:]
+                    print("[" + str(count) + " " + s + "]", end = "")    
+            return 
+
+        fruit = fruits[0]
+        price = prices[fruit]
+        count = amount // price
+
+        for index in range(count + 1):
+            cart[fruit] = index
+            add(fruits[1:], amount - price * index, cart)
+            cart[fruit] = 0
+    
+    cart = {fruit : 0 for fruit in fruits_to_buy}
+    add(fruits_to_buy, total_amount, cart)
 
 
 def display(fruit, count):
@@ -67,6 +91,7 @@ def distance(city_a, city_b):
     5.0
     """
     "*** YOUR CODE HERE ***"
+    return sqrt(pow(get_lat(city_a) - get_lat(city_b), 2) + pow(get_lon(city_a) - get_lon(city_b), 2))
 
 def closer_city(lat, lon, city_a, city_b):
     """
@@ -84,6 +109,15 @@ def closer_city(lat, lon, city_a, city_b):
     'Bucharest'
     """
     "*** YOUR CODE HERE ***"
+    city_curr = make_city('curr', lat, lon)
+    distance_city_a = distance(city_curr, city_a)
+    distance_city_b = distance(city_curr, city_b)
+
+    if distance_city_a <= distance_city_b:
+        return get_name(city_a)
+    else:
+        return get_name(city_b)
+
 
 def check_city_abstraction():
     """

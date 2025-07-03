@@ -13,7 +13,14 @@ def shuffle(s):
     """
     assert len(s) % 2 == 0, 'len(seq) must be even'
     "*** YOUR CODE HERE ***"
-
+    # 交错洗牌
+    mid = len(s) // 2
+    list1 = s[:mid]
+    list2 = s[mid:]
+    res = []
+    for num1, num2 in zip(list1, list2):
+        res.extend((num1, num2))
+    return res
 
 def deep_map(f, s):
     """Replace all non-list elements x with f(x) in the nested list s.
@@ -38,6 +45,12 @@ def deep_map(f, s):
     True
     """
     "*** YOUR CODE HERE ***"
+    for index in range(len(s)):
+        if not isinstance(s[index], list):
+            s[index] = f(s[index])
+        else:
+            deep_map(f, s[index])
+
 
 
 HW_SOURCE_FILE=__file__
@@ -47,11 +60,13 @@ def planet(mass):
     """Construct a planet of some mass."""
     assert mass > 0
     "*** YOUR CODE HERE ***"
+    return ['planet', mass]
 
 def mass(p):
     """Select the mass of a planet."""
     assert is_planet(p), 'must call mass on a planet'
     "*** YOUR CODE HERE ***"
+    return p[1]
 
 def is_planet(p):
     """Whether p is a planet."""
@@ -104,6 +119,13 @@ def balanced(m):
     True
     """
     "*** YOUR CODE HERE ***"
+    if is_planet(m):
+        return True
+    total_left = length(left(m)) * total_mass(end(left(m)))
+    total_right = length(right(m)) * total_mass(end(right(m)))
+    return total_left == total_right and balanced(end(left(m))) and balanced(end(right(m)))
+
+
 
 
 def berry_finder(t):
@@ -124,7 +146,14 @@ def berry_finder(t):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    if label(t) == "berry":
+        return True
+    
+    for subs in branches(t):
+        if berry_finder(subs):
+            return True
+    
+    return False
 
 HW_SOURCE_FILE=__file__
 
@@ -139,6 +168,16 @@ def max_path_sum(t):
     17
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        return label(t)
+    
+    sum = label(t)
+    max_value = 0
+    for subs in branches(t):
+        max_value = max(max_value, max_path_sum(subs))
+
+    ans = sum + max_value
+    return ans
 
 
 def mobile(left, right):

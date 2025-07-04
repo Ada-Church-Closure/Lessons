@@ -27,6 +27,7 @@ def insert_items(s, before, after):
     True
     """
     "*** YOUR CODE HERE ***"
+    # lab05 begin
 
 
 def group_by(s, fn):

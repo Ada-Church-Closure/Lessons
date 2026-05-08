@@ -17,7 +17,7 @@ This repository collects systems- and security-focused coursework and my own not
 - Work: xv6 labs (syscall extensions, virtual memory and page-fault handling, copy-on-write, simple file-system changes, basic concurrency).
 - Note: small codebase but conceptually deep; solo debugging can be challenging. I plan to revisit the papers and remaining topics.
 
-4.[CS 144: Introduction to Computer Networking](https://cs144.github.io) (2025.12.22-2025.12.30, Lab0-Lab3)
+4. [CS 144: Introduction to Computer Networking](https://cs144.github.io) (2025.12.22-2025.12.30, Lab0-Lab3)
 
 - **Focus:** Reliable transport (TCP) implementation, ARQ mechanisms, Flow Control, Finite State Machines.
 
